@@ -224,6 +224,10 @@ html[data-layout=phone-land] #diffBtn{top:calc(env(safe-area-inset-top,0px) + 56
 .card .ctr{position:absolute;left:2px;top:2px;z-index:2;background:var(--gold);color:#1a1208;font-size:calc(var(--cell)*.09);font-weight:700;border-radius:3px;padding:0 3px;line-height:1.4}
 .card .ctr.neg{background:var(--danger);color:#fff;top:auto;bottom:calc(var(--cell)*.17)} .card .ctr.mats{background:#c9b8ff;top:auto;left:auto;right:2px;bottom:calc(var(--cell)*.17)}
 .card.def{transform:rotate(-90deg)}
+@keyframes rotDef{0%{transform:rotate(0) scale(1)}45%{transform:rotate(-50deg) scale(1.16);filter:brightness(1.25) drop-shadow(0 6px 10px #000a)}100%{transform:rotate(-90deg) scale(1)}}
+@keyframes rotAtk{0%{transform:rotate(-90deg) scale(1)}45%{transform:rotate(-40deg) scale(1.16);filter:brightness(1.25) drop-shadow(0 6px 10px #000a)}100%{transform:rotate(0) scale(1)}}
+#arena .card.rot-def{animation:rotDef .5s cubic-bezier(.3,.8,.3,1) both;z-index:5}
+#arena .card.rot-atk{animation:rotAtk .5s cubic-bezier(.3,.8,.3,1) both;z-index:5}
 .card.facedown{filter:saturate(.45) brightness(.8)}
 .card.facedown::after{content:"覆蓋";position:absolute;inset:auto 2px 2px auto;z-index:2;font-size:calc(var(--cell)*.09);background:#000a;color:var(--ink);padding:0 3px;border-radius:3px}
 .card.crystal{box-shadow:0 0 0 2px #9ff3ff,0 0 14px rgba(120,230,255,.8);filter:saturate(1.2)}
@@ -2268,6 +2272,14 @@ function handHTML(p){ const hand=pl(p).hand; const n=hand.length; const vw=Math.
   const cw=(p===ME?HC:OC)*.69; const maxW=LAYOUT==='phone'?vw-44:(p===ME?Math.min(vw-(vw<640?24:420),vw*.7):vw*.45);
   const ov= n>1? Math.max(0,(n*cw-maxW)/(n-1)) : 0;
   return hand.map((c,i)=>`<div class="hslot" style="--i:${i};--n:${n};margin-left:${i?-ov:0}px">${cardHTML(c,ME)}</div>`).join(''); }
+/* 表示形式變更：橫轉直／直轉橫的轉牌動畫（跨重繪保持進度） */
+const posMem={}, posRun={};
+function posAnim(){ const now=performance.now(), seen={};
+  document.querySelectorAll('#arena .card[data-uid]').forEach(el=>{ const u=el.dataset.uid, d=el.classList.contains('def'); seen[u]=1;
+    if(posMem[u]!==undefined&&posMem[u]!==d){ posRun[u]={t:now,to:d?'def':'atk'}; }
+    posMem[u]=d; const r=posRun[u];
+    if(r){ const el_=now-r.t; if(el_>=520){ delete posRun[u]; } else { el.classList.add('rot-'+r.to); el.style.animationDelay=(-el_)+'ms'; } } });
+  for(const u in posMem) if(!seen[u]){ delete posMem[u]; delete posRun[u]; } }
 function render(){
   renderModal();
   if(!S.players.length||UI.screen!=='duel') return;
@@ -2290,6 +2302,7 @@ function render(){
   else if(pk&&!pk.list){ const fx=entranceFx(pk.id); const showOk=pk.max>1||pk.min===0;
     pb2.innerHTML=`<div class="pickbar${fx.cls}"${fx.style}><p>${linkify(pk.title)}${pk.max>1?`（${pk.sel.length}/${pk.max}）`:''}</p><div class="bb">${pk.extras.map(e=>`<button class="lime" data-pickx="${e.value}">${e.label}</button>`).join('')}${showOk?`<button class="lime" data-act="pickok" ${pk.sel.length<pk.min?'disabled':''}>確定</button>`:''}${pk.cancel?`<button class="ghostb" data-act="pickcancel">${pk.cancelLabel}</button>`:''}</div></div>`; }
   else pb2.innerHTML='';
+  posAnim();
   flushMoves();
   const lg=$('#logList'); if(lg&&!$('#logDrawer').hidden) lg.innerHTML=S.log.map(l=>`<li class="${l.who}">${l.t}</li>`).join('');
 }
