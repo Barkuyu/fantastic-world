@@ -1,0 +1,27 @@
+{
+  "name": "遊戲王-𝐅𝐚𝐧𝐭𝐚𝐬𝐭𝐢𝐜 𝐖𝐨𝐫𝐥𝐝",
+  "short_name": "遊戲王-𝐅𝐚𝐧𝐭",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
