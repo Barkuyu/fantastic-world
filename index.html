@@ -434,6 +434,7 @@ html[data-layout=phone] .lpbox .nm,html[data-layout=phone-land] .lpbox .nm{font-
 html[data-layout=phone] #lpbox1,html[data-layout=phone-land] #lpbox1{padding:4px 4px 4px 10px}
 html[data-layout=phone] #pickBar{top:calc(env(safe-area-inset-top,0px) + 60px)}
 html[data-layout=phone] #actionBar{padding:0 12px}
+html[data-layout=desktop] #actionBar{bottom:calc(var(--hcpx,120px) + 12px + env(safe-area-inset-bottom,0px))}
 /* 手機橫向決鬥畫面：LP 放左右上角，階段鈕在右側，手牌縮小 */
 html[data-layout=phone-land] #lpbox0{left:max(8px,env(safe-area-inset-left,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 8px)}
 html[data-layout=phone-land] #lpbox1{top:calc(env(safe-area-inset-top,0px) + 8px)}
@@ -2199,9 +2200,13 @@ function layout(){ const W=innerWidth, H=innerHeight; LAYOUT=pickLayout(); const
   let hc=0, oc=0;
   if(mob){ const sat=safeInset('t'), sab=safeInset('b'); hc=Math.max(96,Math.min(140,Math.round(W*.34))); hr=hc+24; const arenaFull=(W-side)*1048/1501;
     const avail=H-sat-sab-62-hr-arenaFull-8; oc=Math.max(46,Math.min(Math.round(hc*.7),104,Math.floor(avail))); top=54+oc+8; }
+  const desk=!mob&&!land&&!tab; let hcDesk=0;
+  if(desk){ /* 電腦版：棋盤盡量拉大，手牌疊在棋盤下緣裝飾邊上，按鈕都留在棋盤外側 */
+    top=30; const hr0=Math.round(Math.min(168,Math.max(128,H*.19))); const AW0=Math.min(W-side,(H-top-hr0-14)*1501/1048,1600); const C0=Math.floor(AW0*.1295);
+    hcDesk=Math.round(Math.min(150,Math.max(96,C0*1.18))); const ov=Math.round(Math.min(58,H*.055)); hr=hcDesk+8-ov; }
   const pcF=mob?.7:land?.85:1, padF=mob?.12:land?.15:.3; const wF=5+2*pcF+6*.055+2*padF;
-  const AW=Math.max(220,Math.min(W-side,(H-top-hr-(land?14:26))*1501/1048,1100)); CELL=Math.floor(Math.max(34,AW*0.1295));
-  if(!mob){ hc=Math.round(Math.min(150,Math.max(land?62:96,CELL*(land?1.05:1.18)))); oc=Math.round(Math.min(80,Math.max(44,CELL*.82))); }
+  const AW=Math.max(220,Math.min(W-side,(H-top-hr-(land?14:desk?14:26))*1501/1048,desk?1600:1100)); CELL=Math.floor(Math.max(34,AW*0.1295));
+  if(!mob){ hc=desk?hcDesk:Math.round(Math.min(150,Math.max(land?62:96,CELL*(land?1.05:1.18)))); oc=Math.round(Math.min(80,Math.max(44,CELL*.82))); }
   HC=hc; OC=oc;
   const r=document.documentElement.style; r.setProperty('--cell',CELL+'px'); r.setProperty('--top',top+'px'); r.setProperty('--hr',hr+'px'); r.setProperty('--hcpx',hc+'px'); r.setProperty('--ocpx',oc+'px'); r.setProperty('--pc',Math.round(AW*172/1501)+'px'); r.setProperty('--aw',Math.round(AW)+'px'); }
 let HC=100, OC=60; const _sp={};
@@ -2416,12 +2421,14 @@ async function diffMenu(){ const v=await ask('電腦難度',`目前：${LV_NAME[
 async function settingsMenu(){ const inDuel=UI.screen==='duel'&&S.players.length&&!S.over;
   const opts=[{label:`音效：${soundOn?'開':'關'}`,value:'snd'},{label:`背景音樂：${UI.bgm?'開':'關'}`,value:'bgm'},{label:`動畫速度：${UI.speed<1?'快速':'標準'}`,value:'spd'}];
   if(inDuel) opts.push({label:`電腦難度：${LV_NAME[UI.aiLevel]}`,value:'diff'},{label:'決鬥紀錄',value:'log'},{label:'投降',value:'surrender'}); if(UI.screen!=='home') opts.push({label:'回到主選單',value:'home'});
+  if(DEVICE.kind==='desktop'&&document.fullscreenEnabled) opts.push({label:document.fullscreenElement?'離開全螢幕':'全螢幕',value:'fs'});
   opts.push({label:'關閉',value:0,ghost:true});
   const v=await ask('設定','',opts);
   if(v==='snd'){ soundOn=!soundOn; try{localStorage.setItem('xw-sound',soundOn?'on':'off');}catch(e){} if(soundOn){ initAudio(); entranceSound(); } settingsMenu(); }
   else if(v==='bgm'){ UI.bgm=!UI.bgm; save(); settingsMenu(); }
   else if(v==='spd'){ UI.speed=UI.speed<1?1:.55; save(); settingsMenu(); }
   else if(v==='diff') diffMenu();
+  else if(v==='fs'){ try{ if(document.fullscreenElement) await document.exitFullscreen(); else await document.documentElement.requestFullscreen(); }catch(e){} }
   else if(v==='log') toggleLog(true);
   else if(v==='surrender'){ const y=await ask('投降','確定要投降嗎？這場決鬥會記為敗北。',[{label:'投降',value:1},{label:'繼續決鬥',value:0,ghost:true}]); if(y){ try{ endGame(AI,'你投降了'); }catch(e){} } }
   else if(v==='home'){ if(inDuel){ const y=await ask('回到主選單','目前的決鬥會被放棄，且不列入戰績。',[{label:'回到主選單',value:1},{label:'繼續決鬥',value:0,ghost:true}]); if(!y) return; S.over=true; }
