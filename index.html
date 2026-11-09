@@ -143,6 +143,8 @@ html[data-layout=phone] .deckpage,html[data-layout=tablet] .deckpage{grid-templa
 .stk .card{position:relative;z-index:2;display:block}
 .stk .edge{position:absolute;z-index:1;left:1px;right:1px;top:calc(100% - 5px);height:calc(var(--h) + 5px);border-radius:0 0 3px 3px;background:repeating-linear-gradient(to bottom,#f6efdb 0 1px,#b9ae90 1px 2px);box-shadow:inset 0 -2px 2px rgba(0,0,0,.25)}
 .stk .edgeR{position:absolute;z-index:1;left:calc(100% - 2px);top:4px;width:calc(var(--h)*.45);height:calc(100% - 4px);background:repeating-linear-gradient(to bottom,#cfc5a8 0 1px,#8d8368 1px 2px);clip-path:polygon(0 0,100% calc(var(--h)*.5),100% 100%,0 calc(100% - var(--h)))}
+#myHand.scrub .hslot:not(.sel) .card{filter:brightness(.72)} #myHand .hslot.sel .card{box-shadow:0 0 0 2px var(--gold),0 10px 22px rgba(0,0,0,.6),0 0 22px rgba(255,214,120,.65)}
+#myHand.scrub .hslot{pointer-events:none} #myHand.scrub{z-index:12}
 #myHand .hslot{touch-action:none} #myHand .hslot.armed .card{outline:3px solid var(--lime);box-shadow:0 0 18px rgba(185,241,58,.8)}
 #diffBtn{position:absolute;z-index:7;left:max(10px,env(safe-area-inset-left,0px));top:calc(env(safe-area-inset-top,0px) + 62px);padding:6px 10px;border-radius:14px;border:2px solid #4b6a8a;background:radial-gradient(circle at 40% 30%,#2c5a9a,#0e2244);color:#fff;font-size:13px;font-weight:700}
 html[data-layout=phone-land] #diffBtn{top:calc(env(safe-area-inset-top,0px) + 56px)}
@@ -165,7 +167,7 @@ html[data-layout=phone-land] #diffBtn{top:calc(env(safe-area-inset-top,0px) + 56
 .hand{position:absolute;left:0;right:0;display:flex;justify-content:center;align-items:flex-end;pointer-events:none;z-index:6}
 #myHand{bottom:calc(env(safe-area-inset-bottom,0px) + 6px)}
 #myHand{--hc:var(--hcpx,clamp(78px,calc(var(--cell)*1.2),150px))} #myHand .card{--cell:var(--hc)}
-#oppHand{top:calc(env(safe-area-inset-top,0px) - 30px);--oc:clamp(44px,calc(var(--cell)*.82),80px)} #oppHand .card{--cell:var(--oc)}
+#oppHand{top:calc(env(safe-area-inset-top,0px) - 30px);--oc:var(--ocpx,clamp(44px,calc(var(--cell)*.82),80px))} #oppHand .card{--cell:var(--oc)}
 .hslot{pointer-events:auto;transition:transform .18s}
 #myHand .hslot:hover{transform:translateY(-22px) scale(1.06);z-index:5}
 #myHand .hslot{transform:translateY(calc((var(--i) - (var(--n) - 1)/2)*(var(--i) - (var(--n) - 1)/2)*1.2px)) rotate(calc((var(--i) - (var(--n) - 1)/2)*1.6deg))}
@@ -421,7 +423,10 @@ html[data-layout=tablet] #scr-home .crest-wrap{left:auto;right:4vw;top:10%;trans
 .fx-result{position:absolute;inset:0;display:grid;place-items:center;background:radial-gradient(circle,rgba(0,0,0,.2),rgba(0,0,0,.7));animation:actBg 2.2s ease forwards}
 .res-word{font-family:var(--en);font-weight:700;font-style:italic;font-size:clamp(72px,17vw,220px);line-height:1.15;padding:.08em .35em .12em .2em;white-space:nowrap;max-width:100vw;animation:slam 2.1s cubic-bezier(.2,1.3,.4,1) forwards;background:linear-gradient(180deg,#fff6c8,#e6b84a 50%,#8a5a12);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 30px rgba(230,184,74,.7))}
 .fx-result.lose .res-word{background:linear-gradient(180deg,#e8eef8,#7d8ca0 55%,#3a4656);-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 0 30px rgba(120,140,170,.6))}
-html[data-layout=phone] .phasebtn{top:auto;transform:none;bottom:calc(env(safe-area-inset-bottom,0px) + var(--hr,112px) + 26px);width:62px}
+html[data-layout=phone] .phasebtn{top:auto;transform:none;bottom:calc(env(safe-area-inset-bottom,0px) + var(--hr,112px) + 4px);width:62px;right:12px}
+html[data-layout=phone] #oppHand{top:calc(env(safe-area-inset-top,0px) + 54px);align-items:flex-start}
+html[data-layout=phone] #diffBtn{top:auto;left:12px;bottom:calc(env(safe-area-inset-bottom,0px) + var(--hr,112px) + 8px)}
+html[data-layout=phone] #actionBar{bottom:calc(var(--hr,150px) - 2px + env(safe-area-inset-bottom,0px))}
 html[data-layout=phone] .phasebtn small{font-size:10px} html[data-layout=phone] .phasebtn b{font-size:14px}
 html[data-layout=phone] #lpbox0{left:62px;top:calc(env(safe-area-inset-top,0px) + 10px);bottom:auto}
 html[data-layout=phone] .lpbox,html[data-layout=phone-land] .lpbox{padding:4px 10px 4px 4px} html[data-layout=phone] .lpbox .avatar,html[data-layout=phone-land] .lpbox .avatar{width:30px;height:30px;padding:2px}
@@ -2189,15 +2194,21 @@ function pickLayout(){ const W=innerWidth, H=innerHeight, land=W>H;
   return W<640?'phone':'desktop'; }
 function layout(){ const W=innerWidth, H=innerHeight; LAYOUT=pickLayout(); const de=document.documentElement; de.dataset.layout=LAYOUT; de.dataset.device=DEVICE.kind; de.dataset.touch=DEVICE.touch?'1':'0';
   const mob=LAYOUT==='phone', land=LAYOUT==='phone-land', tab=LAYOUT==='tablet';
-  const side=land?170:mob?10:tab?120:W>=1000?230:150; const top=land?8:mob?94:tab?80:66;
-  const hr=land?Math.round(Math.max(70,H*.2)):mob?112:tab?150:Math.round(Math.min(168,Math.max(128,H*.19)));
+  const side=land?170:mob?10:tab?120:W>=1000?230:150; let top=land?8:mob?94:tab?80:66;
+  let hr=land?Math.round(Math.max(70,H*.2)):mob?112:tab?150:Math.round(Math.min(168,Math.max(128,H*.19)));
+  let hc=0, oc=0;
+  if(mob){ const sat=safeInset('t'), sab=safeInset('b'); hc=Math.max(96,Math.min(140,Math.round(W*.34))); hr=hc+24; const arenaFull=(W-side)*1048/1501;
+    const avail=H-sat-sab-62-hr-arenaFull-8; oc=Math.max(46,Math.min(Math.round(hc*.7),104,Math.floor(avail))); top=54+oc+8; }
   const pcF=mob?.7:land?.85:1, padF=mob?.12:land?.15:.3; const wF=5+2*pcF+6*.055+2*padF;
   const AW=Math.max(220,Math.min(W-side,(H-top-hr-(land?14:26))*1501/1048,1100)); CELL=Math.floor(Math.max(34,AW*0.1295));
-  const hc=Math.round(Math.min(150,Math.max(land?62:mob?76:96,CELL*(land?1.05:1.18))));
-  const r=document.documentElement.style; r.setProperty('--cell',CELL+'px'); r.setProperty('--top',top+'px'); r.setProperty('--hr',hr+'px'); r.setProperty('--hcpx',hc+'px'); r.setProperty('--pc',Math.round(AW*172/1501)+'px'); r.setProperty('--aw',Math.round(AW)+'px'); }
+  if(!mob){ hc=Math.round(Math.min(150,Math.max(land?62:96,CELL*(land?1.05:1.18)))); oc=Math.round(Math.min(80,Math.max(44,CELL*.82))); }
+  HC=hc; OC=oc;
+  const r=document.documentElement.style; r.setProperty('--cell',CELL+'px'); r.setProperty('--top',top+'px'); r.setProperty('--hr',hr+'px'); r.setProperty('--hcpx',hc+'px'); r.setProperty('--ocpx',oc+'px'); r.setProperty('--pc',Math.round(AW*172/1501)+'px'); r.setProperty('--aw',Math.round(AW)+'px'); }
+let HC=100, OC=60; const _sp={};
+function safeInset(k){ try{ let el=_sp.el; if(!el){ el=_sp.el=document.createElement('div'); el.style.cssText='position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px) 0'; document.body.appendChild(el); } const cs=getComputedStyle(el); return parseFloat(k==='t'?cs.paddingTop:cs.paddingBottom)||0; }catch(e){ return 0; } }
 function cellPx(){ return CELL; }
 function handHTML(p){ const hand=pl(p).hand; const n=hand.length; const vw=Math.min(window.innerWidth,1400); const cell=cellPx();
-  const cw=p===ME? Math.min(150,Math.max(LAYOUT==='phone-land'?62:LAYOUT==='phone'?76:96,cell*(LAYOUT==='phone-land'?1.05:1.18)))*.69 : Math.min(80,Math.max(44,cell*.82))*.69; const maxW=p===ME?Math.min(vw-(vw<640?24:420),vw*.7):vw*.45;
+  const cw=(p===ME?HC:OC)*.69; const maxW=LAYOUT==='phone'?vw-44:(p===ME?Math.min(vw-(vw<640?24:420),vw*.7):vw*.45);
   const ov= n>1? Math.max(0,(n*cw-maxW)/(n-1)) : 0;
   return hand.map((c,i)=>`<div class="hslot" style="--i:${i};--n:${n};margin-left:${i?-ov:0}px">${cardHTML(c,ME)}</div>`).join(''); }
 function render(){
@@ -2252,7 +2263,7 @@ function spotRect(c,w){ const el=document.querySelector(`#scr-duel [data-uid="${
   let sel=null; if(w.zone==='deck') sel=`[data-pile="deck-${w.p}"]`; else if(w.zone==='extra') sel=`[data-pile="extra-${w.p}"]`; else if(w.zone==='gy') sel=`[data-pile="gy-${w.p}"]`; else if(w.zone==='ban') sel=`[data-pile="ban-${w.p}"]`; else if(w.zone==='hand') sel=w.p===ME?'#myHand':'#oppHand';
   else if(w.zone==='mz'||w.zone==='sz'){ const z=document.querySelector(`#scr-duel [data-zone="${w.zone}-${w.i}"]`); if(z) sel=z; }
   const box=typeof sel==='string'?document.querySelector(sel):sel; if(!box) return null; const r=box.getBoundingClientRect(); if(!r.width) return null;
-  const cell=w.zone==='hand'?(w.p===ME?parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hcpx'))||100:CELL*.8):Math.min(r.width,r.height)*.92;
+  const cell=w.zone==='hand'?(w.p===ME?HC:OC):Math.min(r.width,r.height)*.92;
   return {x:r.left+r.width/2,y:r.top+(w.zone==='hand'?r.height-cell/2:r.height/2),cell}; }
 function isPublicAt(c,w){ if(!w) return false; if(w.zone==='gy'||w.zone==='ban') return true; if(['mz','sz','fz'].includes(w.zone)) return !!c.faceUp; if(w.zone==='hand') return w.p===ME; return false; }
 FX.from=c=>{ if(UI.screen!=='duel'||!S.players.length) return null; const w=where(c); if(!w) return null; const r=spotRect(c,w); if(!r) return null; return {r,pub:isPublicAt(c,w),zone:w.zone,p:w.p}; };
@@ -2533,12 +2544,28 @@ document.addEventListener('pointermove',e=>{ if(!drag) return; if(!drag.moved&&M
 document.addEventListener('pointerup',e=>{ if(!drag) return; const d=drag; drag=null; const svg=$('#dragArrow'); if(svg) svg.remove(); for(const x of document.querySelectorAll('.card.droptarget')) x.classList.remove('droptarget');
   if(!d.moved) return; suppressClick=true; setTimeout(()=>{suppressClick=false;},400); const t=dropTarget(e.clientX,e.clientY); if(!t) return; swipeAttack(d.c,t); });
 let hdrag=null;
-document.addEventListener('pointerdown',e=>{ if(UI.screen!=='duel') return; const el=e.target.closest('#myHand [data-uid]'); if(!el) return; const c=byUid(+el.dataset.uid); if(!c) return;
-  hdrag={c,el,slot:el.closest('.hslot')||el,x0:e.clientX,y0:e.clientY,moved:false}; });
-document.addEventListener('pointermove',e=>{ if(!hdrag) return; const dy=e.clientY-hdrag.y0, dx=e.clientX-hdrag.x0;
-  if(!hdrag.moved&&(Math.hypot(dx,dy)<12||-dy<Math.abs(dx))) return; if(-dy<Math.abs(dx)&&!hdrag.moved) return; hdrag.moved=true; hidePeek();
-  const up=Math.max(0,Math.min(-dy,140)); hdrag.slot.style.transition='none'; hdrag.slot.style.zIndex=9; hdrag.slot.style.transform=`translateY(${-up}px) scale(${1+up/400})`; hdrag.slot.classList.toggle('armed',up>=60&&hasAction(hdrag.c)); });
-function endHdrag(e,cancel){ if(!hdrag) return; const d=hdrag; hdrag=null; d.slot.style.transition=''; d.slot.style.transform=''; d.slot.style.zIndex=''; d.slot.classList.remove('armed');
+document.addEventListener('pointerdown',e=>{ if(UI.screen!=='duel'||e.button>0) return; const el=e.target.closest('#myHand [data-uid]'); if(!el) return; const c=byUid(+el.dataset.uid); if(!c) return;
+  clearTimeout(hdrag&&hdrag.t); hdrag={c,el,slot:el.closest('.hslot')||el,x0:e.clientX,y0:e.clientY,moved:false,scrub:false,t:setTimeout(startScrub,300)}; });
+/* 長按手牌後左右滑動＝選牌（相鄰卡片散開、選中的卡浮起）；選牌狀態再往上推＝開啟動作選單；放開＝預覽該卡 */
+function scrubSlots(){ return [...document.querySelectorAll('#myHand .hslot')]; }
+function startScrub(){ const d=hdrag; if(!d||d.moved) return; const slots=scrubSlots(); if(slots.length<2) return;
+  d.scrub=true; d.slots=slots; d.centers=slots.map(s=>{ const r=s.getBoundingClientRect(); return r.left+r.width/2; }); d.sel=Math.max(0,slots.indexOf(d.slot)); d.up=0; hidePeek(); sfx('hover'); try{ navigator.vibrate&&navigator.vibrate(8); }catch(e){}
+  $('#myHand').classList.add('scrub'); applyScrub(); }
+function scrubCard(d,i){ const el=d.slots[i].querySelector('[data-uid]'); return el?byUid(+el.dataset.uid):null; }
+function applyScrub(){ const d=hdrag; if(!d||!d.scrub) return; const sc=Math.max(1,HC/110);
+  d.slots.forEach((s,i)=>{ const k=i-d.sel, a=Math.abs(k), sg=Math.sign(k); let tx=0,ty=0,sl=1,z='';
+    if(k===0){ ty=-(34*sc+d.up); sl=1.2; z='30'; } else { tx=sg*(a===1?34:a===2?24:16)*sc; ty=a===1?-12*sc:a===2?-5*sc:0; sl=a===1?1.06:1; z=String(20-a); }
+    s.style.transition='transform .16s cubic-bezier(.2,.9,.3,1.2)'; s.style.zIndex=z; s.style.transform=`translate(${tx}px,${ty}px) scale(${sl})`; s.classList.toggle('sel',k===0); s.classList.toggle('armed',k===0&&d.up>=70&&hasAction(scrubCard(d,i))); }); }
+document.addEventListener('pointermove',e=>{ const d=hdrag; if(!d) return; const dy=e.clientY-d.y0, dx=e.clientX-d.x0;
+  if(d.scrub){ let best=0,bd=1e9; d.centers.forEach((c,i)=>{ const dd=Math.abs(c-e.clientX); if(dd<bd){ bd=dd; best=i; } }); const up=Math.max(0,Math.min(-dy,140));
+    if(best!==d.sel){ d.sel=best; sfx('hover'); try{ navigator.vibrate&&navigator.vibrate(4); }catch(_){} } d.up=up; applyScrub(); return; }
+  if(!d.moved&&(Math.hypot(dx,dy)<12||-dy<Math.abs(dx))){ if(Math.hypot(dx,dy)>=12) clearTimeout(d.t); return; } clearTimeout(d.t); d.moved=true; hidePeek();
+  const up=Math.max(0,Math.min(-dy,140)); d.slot.style.transition='none'; d.slot.style.zIndex=9; d.slot.style.transform=`translateY(${-up}px) scale(${1+up/400})`; d.slot.classList.toggle('armed',up>=60&&hasAction(d.c)); });
+function endHdrag(e,cancel){ if(!hdrag) return; const d=hdrag; hdrag=null; clearTimeout(d.t);
+  if(d.scrub){ const card=scrubCard(d,d.sel), up=d.up; $('#myHand').classList.remove('scrub'); d.slots.forEach(s=>{ s.style.transition=''; s.style.transform=''; s.style.zIndex=''; s.classList.remove('sel','armed'); });
+    suppressClick=true; setTimeout(()=>{ suppressClick=false; },400); if(cancel||!card) return;
+    if(up>=70&&hasAction(card)) onCardAction(card); else showPeek(card); return; }
+  d.slot.style.transition=''; d.slot.style.transform=''; d.slot.style.zIndex=''; d.slot.classList.remove('armed');
   if(!d.moved) return; suppressClick=true; setTimeout(()=>{suppressClick=false;},400); if(cancel) return;
   if(d.y0-e.clientY>=60&&Math.abs(e.clientX-d.x0)<d.y0-e.clientY){ if(hasAction(d.c)) onCardAction(d.c); else sfx('click'); } }
 document.addEventListener('pointerup',e=>endHdrag(e,false)); document.addEventListener('pointercancel',e=>endHdrag(e,true));
@@ -2560,7 +2587,7 @@ const RULES_HTML=`<div class="rules">
 <h4>召喚</h4><ul><li>通常召喚與覆蓋怪獸合計每回合 1 次；5～6 星需解放 1 隻，7 星以上解放 2 隻。</li><li>超量召喚：用相同等級的怪獸疊放。連結召喚：素材合計等於連結值（連結怪獸可算 1 或其連結值）。符合條件時，畫面下方會出現「從額外牌組召喚」。</li><li>本版的連結怪獸召喚到主要怪獸區，沒有額外怪獸區與連結箭頭。</li></ul>
 <h4>魔法・陷阱與連鎖</h4><ul><li>陷阱與速攻魔法覆蓋的當回合不能發動。咒文速度：一般魔法 1、速攻魔法與陷阱 2、反制陷阱 3。</li><li>連鎖逆序處理：後發先解。成本先支付，效果被無效也不退回。破壞≠無效。</li></ul>
 <h4>戰鬥</h4><ul><li>攻擊表示互打：較低者被破壞並承受差額；相同則同歸於盡。攻擊守備表示：攻擊力較高則破壞但不造成傷害（貫穿除外）。</li><li>攻擊宣言後對手怪獸數量改變會發生戰鬥重捲。</li></ul>
-<h4>操作方式</h4><ul><li>電腦：滑鼠移到卡片上，右上方立即顯示詳細資訊，移開就取消；點卡片開啟操作選單。</li><li>手機：點一下卡片顯示資訊（點其他地方才收起），快速連點兩下開啟操作選單；提示框中的卡片長按顯示資訊。</li><li>寶玉獸被破壞時可選擇「晶化」：放到魔陷區當作永續魔法。</li><li>除外區：被除外的卡片會放在場地中央線兩端的「除外」格（我方在右、對手在左），點一下可查看清單。</li><li>編輯卡組：主選單「DECK」→「✎ 編輯卡組」。左邊是卡池、右邊是目前牌組（手機用上方分頁切換）；點卡池的卡加入、點卡片上的「−」或電腦版按滑鼠右鍵移除（點牌組裡的卡也會移除，卡片上的「＋」可再加一張），同名卡最多 3 張（限制卡 1 張），主牌組建議 40–60 張、額外牌組最多 15 張。可還原預設、另存新卡組。</li><li>瀏覽卡片：在非決鬥畫面（DECK、CARDS 等）長按任一張卡，即可看大圖與完整說明。</li><li>手牌滑動：把手牌往上（往前）滑動超過一段距離放開，即開啟該卡本回合可進行的動作（召喚、設置、發動等）。</li><li>電腦難度：可在對戰設定與決鬥中的「難度」鈕隨時切換低／中／高。</li><li>滑動攻擊：在主要階段 1 或戰鬥階段，按住自己的攻擊表示怪獸滑向對手怪獸（或對手半場／LP 直接攻擊），會自動進入戰鬥階段並詢問是否確定攻擊。</li></ul></div>`;
+<h4>操作方式</h4><ul><li>電腦：滑鼠移到卡片上，右上方立即顯示詳細資訊，移開就取消；點卡片開啟操作選單。</li><li>手機：點一下卡片顯示資訊（點其他地方才收起），快速連點兩下開啟操作選單；提示框中的卡片長按顯示資訊。</li><li>寶玉獸被破壞時可選擇「晶化」：放到魔陷區當作永續魔法。</li><li>除外區：被除外的卡片會放在場地中央線兩端的「除外」格（我方在右、對手在左），點一下可查看清單。</li><li>編輯卡組：主選單「DECK」→「✎ 編輯卡組」。左邊是卡池、右邊是目前牌組（手機用上方分頁切換）；點卡池的卡加入、點卡片上的「−」或電腦版按滑鼠右鍵移除（點牌組裡的卡也會移除，卡片上的「＋」可再加一張），同名卡最多 3 張（限制卡 1 張），主牌組建議 40–60 張、額外牌組最多 15 張。可還原預設、另存新卡組。</li><li>瀏覽卡片：在非決鬥畫面（DECK、CARDS 等）長按任一張卡，即可看大圖與完整說明。</li><li>手牌滑動：把手牌往上（往前）滑動超過一段距離放開，即開啟該卡本回合可進行的動作（召喚、設置、發動等）。</li><li>手牌很多時：長按手牌不放、左右滑動即可「選牌」（選中的牌浮起、左右的牌散開）；放開會預覽該卡，選牌時再往上推放開則直接開啟動作選單。電腦版用滑鼠按住拖曳也一樣。</li><li>電腦難度：可在對戰設定與決鬥中的「難度」鈕隨時切換低／中／高。</li><li>滑動攻擊：在主要階段 1 或戰鬥階段，按住自己的攻擊表示怪獸滑向對手怪獸（或對手半場／LP 直接攻擊），會自動進入戰鬥階段並詢問是否確定攻擊。</li></ul></div>`;
 
 /* ===================== 圖示 ===================== */
 const ICON={
