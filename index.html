@@ -2119,7 +2119,7 @@ function delDeck(k){ delete DECK_LIST[k]; delete DECK_SAVE.users[k]; saveDecks()
 /* ===================== 非戰鬥畫面：長按預覽卡片 ===================== */
 function openCardView(c){ if(!c) return; closeCardView(); const el=document.createElement('div'); el.id='cardView'; el.innerHTML=`<div class="cvbox">${detailInner(c)}</div><button class="cvx" aria-label="關閉">✕</button>`; document.body.appendChild(el); }
 function closeCardView(){ const e=$('#cardView'); if(e) e.remove(); }
-(function(){ const r=document.createElement('div'); r.id='rotateHint'; r.innerHTML='<i>📱</i><div>請將手機轉回直式</div><small style="font-weight:400;opacity:.7">本遊戲僅支援直式操作</small>'; document.body.appendChild(r);
+(function(){ if(!document.body||!document.body.appendChild) return; const r=document.createElement('div'); r.id='rotateHint'; r.innerHTML='<i>📱</i><div>請將手機轉回直式</div><small style="font-weight:400;opacity:.7">本遊戲僅支援直式操作</small>'; document.body.appendChild(r);
   const lock=()=>{ try{ screen.orientation&&screen.orientation.lock&&screen.orientation.lock('portrait').catch(()=>{}); }catch(e){} }; lock(); document.addEventListener('click',lock,{once:true}); })();
 document.addEventListener('selectstart',e=>{ const t=e.target&&e.target.nodeType===1?e.target:e.target&&e.target.parentElement; if(!t||!t.closest('input,textarea')) e.preventDefault(); });
 document.addEventListener('dragstart',e=>e.preventDefault());
