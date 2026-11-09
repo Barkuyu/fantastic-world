@@ -1044,10 +1044,8 @@ const DECKS={
   [1]:{scout:2,beetle:2,wolf:3,ashsword:3,hawk:2,serpent:2,guard:1,sprite:2,thunder:1,boneknight:2,golem:1,skydragon:1,starDraw:2,skybolt:1,spring:1,flare:1,fusion:2,blade:1,forest:1,revive:1,gale:1,snap:2,mist:1,seal:1,pit:2,moon:1}};
 const EXTRAS={[0]:{mazu1:1,mazu2:1},[1]:{silverfang:2,ashdragoon:2}};
 const DECK_LIST={
-  bday:{name:'生日卡組',sub:'機靈鬼才 艾迪 × 職能甜心 蘇',main:DECKS[0],extra:EXTRAS[0],cover:'eddie'},
-  cb:{name:'寶玉獸 × Ryzeal',sub:'競技卡表 MAIN 40 / EXTRA 15',main:{cb_peg:3,cb_ruby:1,cb_eagle:1,cb_turtle:1,cb_mammoth:1,cb_tiger:1,cb_cat:1,cb_rd:2,rd:1,ryz_ext:1,ryz_sword:1,ryz_node:1,ash:2,droll:1,fuwalos:3,nibiru:1,golden:3,bond:3,heartbridge:3,bridge:3,rcross:1,awaken:1,imperm:3,miracle:1},
-     extra:{duo:1,deton:1,mereo:1,spk:1,granite:1,zeal:1,twins:1,exciton:1,sheep:1,snake:1,masq:1,n60:1,skull:1,overdrive:1,ignister:1},cover:'cb_peg'},
-  orig:{name:'星紋原創卡組',sub:'電腦預設使用的原創卡池',main:DECKS[1],extra:EXTRAS[1],cover:'skydragon'}};
+  bday:{name:'艾迪&蘇蘇',sub:'機靈鬼才 艾迪 × 職能甜心 蘇',main:DECKS[0],extra:EXTRAS[0],cover:'eddie'},
+  orig:{name:'星紋原創01',sub:'電腦預設使用的原創卡池',main:DECKS[1],extra:EXTRAS[1],cover:'skydragon'}};
 const FX={};
 
 /* ===================== 狀態與工具 ===================== */
@@ -2087,7 +2085,7 @@ function topbar(){ const wr=STATS.duels?Math.round(STATS.win/STATS.duels*100):0;
   <div class="chips"><span class="chip">勝 <b>${STATS.win}</b></span><span class="chip">敗 <b>${STATS.lose}</b></span><span class="chip">勝率 <b>${wr}%</b></span><span class="chip">連勝 <b>${STATS.streak}</b></span></div>
   <div class="tb-icons"><button class="tbi" data-act="settings" aria-label="設定">${ICON.gear}<small>設定</small></button></div></div>`; }
 let bannerIdx=0;
-const BANNERS=[{t:'遊戲王-𝐅𝐚𝐧𝐭𝐚𝐬𝐭𝐢𝐜 𝐖𝐨𝐫𝐥𝐝',s:'正式開幕！使用你的牌組挑戰電腦對手',k:'bday'},{t:'寶玉獸 × Ryzeal',s:'競技卡表登場：七寶玉與 Rank 4 引擎',k:'cb'},{t:'生日卡組',s:'艾迪與蘇的紀念日：放滿 10 個戒指代幣即勝利',k:'bday'}];
+const BANNERS=[{t:'遊戲王-𝐅𝐚𝐧𝐭𝐚𝐬𝐭𝐢𝐜 𝐖𝐨𝐫𝐥𝐝',s:'正式開幕！使用你的牌組挑戰電腦對手',k:'bday'},{t:'艾迪&蘇蘇',s:'艾迪與蘇的紀念日：放滿 10 個戒指代幣即勝利',k:'bday'}];
 function renderHome(){ const D_=DECK_LIST[UI.deck]; const b=BANNERS[bannerIdx%BANNERS.length];
   $('#scr-home .hwrap').innerHTML=`${topbar()}
   <div class="hmid"><div class="crest-wrap"><div class="crest">${CREST_SVG}</div><div class="pedestal"></div></div>
@@ -2112,15 +2110,14 @@ function renderDeck(){ const k=UI.view, d=DECK_LIST[k]; if(UI.edit&&DECK_LIST[UI
   $('#scr-deck .swrap').classList.remove('editing');
   $('#scr-deck .swrap').innerHTML=`${headerBar('我的牌組')}<div class="deckpage"><aside class="dlist">${Object.keys(DECK_LIST).map(x=>deckTile(x,x===k,'data-view')).join('')}<button class="dtile newdeck" data-act="newdeck"><b>＋ 新增卡組</b><small>複製目前選取的卡組後自由編輯</small></button></aside>
   <section class="dmain"><div class="dhead"><div><h3>${d.name}</h3><small>${d.sub}</small></div><div class="dbtns"><button class="ghostb" data-act="edit" data-k="${k}">✎ 編輯卡組</button>${UI.deck===k?'<span class="inuse big">使用中的牌組</span>':`<button class="lime" data-act="usedeck" data-k="${k}">設為使用牌組</button>`}</div></div>
-  <div class="dpanel"><h4 class="sec">主牌組 ${Object.values(d.main).reduce((a,b)=>a+b,0)}</h4>${deckGrid(d.main)}<h4 class="sec">額外牌組 ${Object.values(d.extra).reduce((a,b)=>a+b,0)}</h4><div class="grid">${Object.entries(d.extra).map(([id,n])=>`<div class="gcard">${showCard(id)}${n>1?`<span class="cnt">×${n}</span>`:''}</div>`).join('')}</div>
-  ${k==='cb'?'<p class="note">這副牌組的卡片效果依你的卡表摘要做了簡化實作，卡片說明中的【本遊戲實作】段落寫明實際效果。卡面為自動產生的樣式，沒有使用官方卡圖。</p>':''}</div></section></div>`; }
+  <div class="dpanel"><h4 class="sec">主牌組 ${Object.values(d.main).reduce((a,b)=>a+b,0)}</h4>${deckGrid(d.main)}<h4 class="sec">額外牌組 ${Object.values(d.extra).reduce((a,b)=>a+b,0)}</h4><div class="grid">${Object.entries(d.extra).map(([id,n])=>`<div class="gcard">${showCard(id)}${n>1?`<span class="cnt">×${n}</span>`:''}</div>`).join('')}</div></div></section></div>`; }
 
 /* ===================== 編輯卡組 ===================== */
 const EXTRA_SUBS=['fusion','xyz','link','synchro'];
 const isExtraCard=id=>{ const d=CARDS[id]; return d.kind==='monster'&&EXTRA_SUBS.includes(d.sub); };
 const maxCopies=id=>CARDS[id].limit?1:3;
 const POOL_IDS=(()=>{ const seen=new Set(), out=[]; const add=id=>{ const d=CARDS[id]; if(!d||seen.has(id)||d.sub==='token'||d.mimic) return; seen.add(id); out.push(id); };
-  for(const k of Object.keys(DECK_DEF)){ Object.keys(DECK_DEF[k].main).forEach(add); Object.keys(DECK_DEF[k].extra).forEach(add); } Object.keys(CARDS).forEach(add); return out; })();
+  for(const k of Object.keys(DECK_DEF)){ Object.keys(DECK_DEF[k].main).forEach(add); Object.keys(DECK_DEF[k].extra).forEach(add); } return out; })();
 const SRC_OF={}; for(const k of Object.keys(DECK_DEF)) for(const id of [...Object.keys(DECK_DEF[k].main),...Object.keys(DECK_DEF[k].extra)]) if(!SRC_OF[id]) SRC_OF[id]=k;
 const sumMap=m=>Object.values(m).reduce((a,b)=>a+b,0);
 const KIND_LBL={monster:'怪獸',spell:'魔法',trap:'陷阱',extra:'額外牌組'};
@@ -2193,7 +2190,7 @@ function renderSetup(){ const ai=DECK_LIST[UI.aiDeck];
   $('#scr-setup .swrap').innerHTML=`${headerBar('決鬥設定')}<div class="setup">
   <h3>你的牌組</h3><div class="dtrow">${Object.keys(DECK_LIST).map(x=>deckTile(x,x===UI.deck,'data-mydeck')).join('')}</div>
   <h3>電腦對手的牌組</h3><div class="dtrow">${Object.keys(DECK_LIST).map(x=>deckTile(x,x===UI.aiDeck,'data-aideck').replace('<span class="inuse">使用中</span>','')).join('')}</div>
-  ${UI.aiDeck!=='orig'?'<p class="note">電腦只熟悉「星紋原創卡組」的卡片；使用其他牌組時，會以召喚、蓋牌與攻擊等基本策略進行。</p>':''}
+  ${UI.aiDeck!=='orig'?'<p class="note">電腦只熟悉「星紋原創01」的卡片；使用其他牌組時，會以召喚、蓋牌與攻擊等基本策略進行。</p>':''}
   <h3>電腦難度</h3><div class="dtrow lvrow">${LV_NAME.map((n,i)=>`<button class="lvb${UI.aiLevel===i?' on':''}" data-lv="${i}">${n}</button>`).join('')}</div><p class="note">進入決鬥後，每個回合都可以按左側「難度」鈕重新選擇。</p>
   <div class="setup-go"><button class="bigduel inline" data-act="startduel"><span class="bd-t">決鬥開始</span><span class="bd-s">${DECK_LIST[UI.deck].name} vs ${ai.name}</span><span class="bd-i">${ICON.swords}</span></button></div></div>`; }
 function renderCards(){ const keys=['all',...Object.keys(DECK_LIST)]; const ids=new Set();
@@ -2666,7 +2663,7 @@ function swipeAttack(a,t){ run(async()=>{
 
 /* ===================== 規則說明 ===================== */
 const RULES_HTML=`<div class="rules">
-<h4>勝利條件</h4><ul><li>LP 8000，起始手牌 5 張。對手 LP 歸零，或對手必須抽牌時牌組無牌即獲勝；同時歸零為平手。</li><li>生日卡組的「紀念日：1016」放滿 10 個戒指代幣也會直接獲勝。</li></ul>
+<h4>勝利條件</h4><ul><li>LP 8000，起始手牌 5 張。對手 LP 歸零，或對手必須抽牌時牌組無牌即獲勝；同時歸零為平手。</li><li>艾迪&蘇蘇的「紀念日：1016」放滿 10 個戒指代幣也會直接獲勝。</li></ul>
 <h4>回合流程</h4><ul><li>抽牌 → 準備 → 主要1 → 戰鬥 → 主要2 → 結束。點右側圓形按鈕可以切換階段。</li><li>先攻第一回合不抽牌、不能進行戰鬥。結束階段手牌超過 6 張要丟棄至 6 張。</li></ul>
 <h4>召喚</h4><ul><li>通常召喚與覆蓋怪獸合計每回合 1 次；5～6 星需解放 1 隻，7 星以上解放 2 隻。</li><li>超量召喚：用相同等級的怪獸疊放。連結召喚：素材合計等於連結值（連結怪獸可算 1 或其連結值）。符合條件時，畫面下方會出現「從額外牌組召喚」。</li><li>本版的連結怪獸召喚到主要怪獸區，沒有額外怪獸區與連結箭頭。</li></ul>
 <h4>魔法・陷阱與連鎖</h4><ul><li>陷阱與速攻魔法覆蓋的當回合不能發動。咒文速度：一般魔法 1、速攻魔法與陷阱 2、反制陷阱 3。</li><li>連鎖逆序處理：後發先解。成本先支付，效果被無效也不退回。破壞≠無效。</li></ul>
