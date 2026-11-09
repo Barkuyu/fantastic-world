@@ -283,6 +283,16 @@ html[data-layout=phone-land] #diffBtn{top:calc(env(safe-area-inset-top,0px) + 56
 #cardView .cvx{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);right:12px;width:40px;height:40px;border-radius:50%;border:1px solid #4a6a84;background:#0e2244;color:#fff;font-size:18px}
 html[data-layout=phone] #cardView .cvbox{grid-template-columns:1fr;justify-items:center;text-align:left} html[data-layout=phone] #cardView .big{--cell:150px;grid-row:auto;grid-column:1} html[data-layout=phone] #cardView h2,html[data-layout=phone] #cardView .meta,html[data-layout=phone] #cardView .stats{grid-column:1;justify-self:stretch}
 [data-show]{-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
+/* 禁止誤選取／長按選單／拖曳圖片 */
+html,body,*{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+input,textarea{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+img,svg,video,canvas{-webkit-user-drag:none;user-drag:none}
+::selection{background:transparent}
+/* 手機橫向時提示轉回直式 */
+#rotateHint{position:fixed;inset:0;z-index:99999;background:#060a12;color:#fff;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;font-size:18px;font-weight:700}
+#rotateHint i{font-style:normal;font-size:54px;display:block;animation:rot 1.6s ease-in-out infinite}
+@keyframes rot{0%,100%{transform:rotate(90deg)}50%{transform:rotate(0)}}
+@media (orientation:landscape) and (max-height:520px) and (pointer:coarse){ #rotateHint{display:flex} }
 .dbtns{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .ghostb.sm,.lime.sm{padding:7px 14px;font-size:13px;border-radius:999px} .hbar .grow{flex:1}
 .dtile.newdeck{border-style:dashed;justify-content:center;text-align:center;flex-direction:column;gap:4px;padding:16px;color:var(--lime)}
@@ -2104,13 +2114,17 @@ function delDeck(k){ delete DECK_LIST[k]; delete DECK_SAVE.users[k]; saveDecks()
 /* ===================== 非戰鬥畫面：長按預覽卡片 ===================== */
 function openCardView(c){ if(!c) return; closeCardView(); const el=document.createElement('div'); el.id='cardView'; el.innerHTML=`<div class="cvbox">${detailInner(c)}</div><button class="cvx" aria-label="關閉">✕</button>`; document.body.appendChild(el); }
 function closeCardView(){ const e=$('#cardView'); if(e) e.remove(); }
+(function(){ const r=document.createElement('div'); r.id='rotateHint'; r.innerHTML='<i>📱</i><div>請將手機轉回直式</div><small style="font-weight:400;opacity:.7">本遊戲僅支援直式操作</small>'; document.body.appendChild(r);
+  const lock=()=>{ try{ screen.orientation&&screen.orientation.lock&&screen.orientation.lock('portrait').catch(()=>{}); }catch(e){} }; lock(); document.addEventListener('click',lock,{once:true}); })();
+document.addEventListener('selectstart',e=>{ const t=e.target&&e.target.nodeType===1?e.target:e.target&&e.target.parentElement; if(!t||!t.closest('input,textarea')) e.preventDefault(); });
+document.addEventListener('dragstart',e=>e.preventDefault());
 let lp2=null;
 document.addEventListener('pointerdown',e=>{ if(UI.screen==='duel'||e.button>0) return; const el=e.target.closest('[data-show],[data-cref]'); if(!el) return; clearTimeout(lp2&&lp2.t);
   lp2={x:e.clientX,y:e.clientY,fired:false,t:setTimeout(()=>{ lp2.fired=true; suppressClick=true; hidePeek(); sfx('click'); openCardView(previewCard(el)); },450)}; });
 document.addEventListener('pointermove',e=>{ if(lp2&&!lp2.fired&&Math.hypot(e.clientX-lp2.x,e.clientY-lp2.y)>10){ clearTimeout(lp2.t); lp2=null; } });
 const endLp2=()=>{ if(!lp2) return; clearTimeout(lp2.t); const f=lp2.fired; lp2=null; if(f) setTimeout(()=>{ suppressClick=false; },450); };
 document.addEventListener('pointerup',endLp2); document.addEventListener('pointercancel',endLp2);
-document.addEventListener('contextmenu',e=>{ if(UI.screen==='duel') return; const a=e.target.closest('[data-ed-add]'); if(a&&lastPtr==='mouse'){ e.preventDefault(); edDel(a.dataset.edAdd); return; } if(e.target.closest('[data-show],[data-cref]')) e.preventDefault(); });
+document.addEventListener('contextmenu',e=>{ if(UI.screen==='duel'){ if(!e.target.closest('input,textarea')) e.preventDefault(); return; } const a=e.target.closest('[data-ed-add]'); if(a&&lastPtr==='mouse'){ e.preventDefault(); edDel(a.dataset.edAdd); return; } if(!e.target.closest('input,textarea')) e.preventDefault(); });
 document.addEventListener('input',e=>{ if(e.target.id==='edQ'){ UI.edQ=e.target.value; const p=$('#edPool'); if(p) p.innerHTML=edPoolHTML(); } });
 document.addEventListener('change',e=>{ if(e.target.id==='edSrc'){ UI.edS=e.target.value; const p=$('#edPool'); if(p) p.innerHTML=edPoolHTML(); } });
 function renderSetup(){ const ai=DECK_LIST[UI.aiDeck];
